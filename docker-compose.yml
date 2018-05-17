@@ -1,0 +1,24 @@
+version: '2'
+services:
+  master:
+    container_name: master
+    image: docker.io/osrf/ros:kinetic-desktop-full
+    environment:
+      - ROS_HOSTNAME=master
+    command: roscore
+
+  lidar1:
+    container_name: lidar1
+    image: osrf/ros:rplidarA
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    links:
+      - master
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - ROS_HOSTNAME=lidar1
+      - ROS_MASTER_URI=http://master:11311
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/spctx310b/.ros:/root/.ros
